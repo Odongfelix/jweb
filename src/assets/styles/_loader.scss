@@ -67,13 +67,14 @@
   100% {
     border-top-color: orange; /* change to orange */
 
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
 
-    to {
-      transform: rotate(360deg);
+      to {
+        transform: rotate(360deg);
+      }
     }
   }
 }
