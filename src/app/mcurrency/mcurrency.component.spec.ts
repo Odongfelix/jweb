@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EntryComponent } from './entry.component';
+import { McurrencyComponent } from './mcurrency.component';
 
-describe('EntryComponent', () => {
-  let component: EntryComponent;
-  let fixture: ComponentFixture<EntryComponent>;
+describe('McurrencyComponent', () => {
+  let component: McurrencyComponent;
+  let fixture: ComponentFixture<McurrencyComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EntryComponent ]
+      declarations: [ McurrencyComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EntryComponent);
+    fixture = TestBed.createComponent(McurrencyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
