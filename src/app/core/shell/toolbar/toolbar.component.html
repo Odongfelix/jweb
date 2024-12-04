@@ -117,11 +117,11 @@
   <button mat-menu-item [routerLink]="['/xbrl']">{{ 'labels.menus.XBRL' | translate }}</button>
 </mat-menu>
 
-<!-- Toolbar Menus -->
+<!--Multi-currency Toolbar Menus -->
 <mat-menu #mCurrencyMenu="matMenu" [overlapTrigger]="false">
-  <button mat-menu-item [routerLink]="['/currency']">Configuration</button>
-  <button mat-menu-item [routerLink]="['/entry']">GL Entry</button>
-  <button mat-menu-item [routerLink]="['/reporting']">Reporting</button>
+  <button mat-menu-item [routerLink]="['/multi-currency/configuration']">{{'Configuration' | translate }}</button>
+  <button mat-menu-item [routerLink]="['/multi-currency/entry']">{{'GL Entry' | translate }}</button>
+  <button mat-menu-item [routerLink]="['/multi-currency/reporting']">{{'Reporting' | translate }}</button>
 </mat-menu>
 
 <mat-menu #adminMenu="matMenu" [overlapTrigger]="false">
