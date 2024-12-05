@@ -1,1 +1,170 @@
-<p>entry works!</p>
+<div class="container">
+
+  <mat-card>
+
+    <form>
+
+      <mat-card-content>
+
+        <div fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Office</mat-label>
+            <mat-select required>
+              <mat-option>Select Office</mat-option>
+            </mat-select>
+            <mat-error>
+              Office is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Currency</mat-label>
+            <mat-select required>
+              <mat-option>Select Currency</mat-option>
+            </mat-select>
+            <mat-error>
+              Currency is required
+            </mat-error>
+          </mat-form-field>
+
+          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column">
+
+            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+
+              <mat-form-field fxFlex="48%">
+                <mat-label>Affected GL Entry (Debit)</mat-label>
+                <mat-select required>
+                  <mat-option>Select GL Account</mat-option>
+                </mat-select>
+                <mat-error>
+                  GL Account is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="43%">
+                <mat-label>Debit Amount</mat-label>
+                <input type="number" matInput required>
+                <mat-error>
+                  Debit Amount is required
+                </mat-error>
+              </mat-form-field>
+
+              <span fxFlex>
+                <button type="button" mat-icon-button>
+                  <fa-icon icon="plus-circle" size="lg"></fa-icon>
+                </button>
+              </span>
+
+            </div>
+
+          </div>
+
+          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column">
+
+            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+
+              <mat-form-field fxFlex="48%">
+                <mat-label>Affected GL Entry (Credit)</mat-label>
+                <mat-select required>
+                  <mat-option>Select GL Account</mat-option>
+                </mat-select>
+                <mat-error>
+                  GL Account is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field fxFlex="43%">
+                <mat-label>Credit Amount</mat-label>
+                <input type="number" matInput required>
+                <mat-error>
+                  Credit Amount is required
+                </mat-error>
+              </mat-form-field>
+
+              <span fxFlex>
+                <button type="button" mat-icon-button>
+                  <fa-icon icon="plus-circle" size="lg"></fa-icon>
+                </button>
+              </span>
+
+            </div>
+
+          </div>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Reference Number</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Transaction Date</mat-label>
+            <input matInput>
+            <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
+            <mat-datepicker></mat-datepicker>
+            <mat-error>
+              Transaction Date is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Payment Type</mat-label>
+            <mat-select>
+              <mat-option>Select Payment Type</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Account Number</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Cheque Number</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Routing Code</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Receipt Number</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="48%">
+            <mat-label>Bank Number</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="98%">
+            <mat-label>Comments</mat-label>
+            <textarea matInput></textarea>
+          </mat-form-field>
+
+        </div>
+
+      </mat-card-content>
+
+      <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
+        <button type="button" mat-raised-button>Cancel</button>
+        <button mat-raised-button color="primary">Submit</button>
+      </mat-card-actions>
+
+    </form>
+
+  </mat-card>
+
+</div>
+
+<ng-template>
+  <h2>Add Journal Entry Form</h2>
+  <p class="mw300">Red asterisk fields are required.</p>
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column">
+    <button mat-raised-button color="warn">Close</button>
+    <button mat-raised-button color="primary">Back</button>
+    <button mat-raised-button color="primary">Next</button>
+  </div>
+</ng-template>

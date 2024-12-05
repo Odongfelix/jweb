@@ -3,25 +3,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { MconfigurationComponent } from './mconfiguration/mconfiguration.component';
 import { EntryComponent } from './entry/entry.component';
 import { ReportingComponent } from './reporting/reporting.component';
+import { ShellComponent } from '../core/shell/shell.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'configuration',
-    pathMatch: 'full',
-  },
-  {
-    path: 'configuration',
-    component: MconfigurationComponent
-  },
-  {
-    path: 'entry',
-    component: EntryComponent
-  },
-  {
-    path: 'reporting',
-    component: ReportingComponent
-  }
+      {
+        path: '',
+        redirectTo: 'configuration',
+        pathMatch: 'full',
+      },
+      {
+        path: 'configuration',
+        component: MconfigurationComponent
+      },
+      {
+        path: 'entry',
+        component: EntryComponent
+      },
+      {
+        path: 'reporting',
+        component: ReportingComponent
+      }
 ];
 
 @NgModule({

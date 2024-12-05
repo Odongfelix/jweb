@@ -1,1 +1,87 @@
-<p>reporting works!</p>
+<div class="container">
+  <h2>Multi-Currency Report</h2>
+
+  <!-- Filtering Form -->
+  <form [formGroup]="filterForm" class="filter-form">
+    <div fxLayout="row" fxLayoutGap="2%" fxLayout.lt-md="column">
+      <!-- From Date -->
+      <mat-form-field>
+        <mat-label>From Date</mat-label>
+        <input matInput
+               [matDatepicker]="fromDatePicker"
+               formControlName="fromDate"
+               placeholder="Choose start date">
+        <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- To Date -->
+      <mat-form-field>
+        <mat-label>To Date</mat-label>
+        <input matInput
+               [matDatepicker]="toDatePicker"
+               formControlName="toDate"
+               placeholder="Choose end date">
+        <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #toDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Office Selector -->
+      <mat-form-field>
+        <mat-label>Select Office</mat-label>
+        <mat-select formControlName="office">
+          <mat-option *ngFor="let office of offices" [value]="office">
+            {{office}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Reset Filters Button -->
+      <button mat-raised-button color="warn" (click)="resetFilters()">
+        Reset Filters
+      </button>
+    </div>
+  </form>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Table -->
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Dynamic Column Generation -->
+    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ column | titlecase }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[column] }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <!-- Pagination -->
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    showFirstLastButtons>
+  </mat-paginator>
+
+  <!-- Export Buttons -->
+  <div class="export-buttons">
+    <button mat-raised-button color="primary" (click)="exportToCSV()">
+      Export to CSV
+    </button>
+    <button mat-raised-button color="accent" (click)="printReport()">
+      Print Report
+    </button>
+  </div>
+</div>

@@ -97,7 +97,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     McurrencyRoutingModule
   ],
-  declarations: [WebAppComponent, NotFoundComponent, MconfigurationComponent, EntryComponent, ReportingComponent],
+  declarations: [WebAppComponent, NotFoundComponent],
   providers: [DatePipe],
   bootstrap: [WebAppComponent]
 })
