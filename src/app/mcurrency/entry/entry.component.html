@@ -2,56 +2,67 @@
 
   <mat-card>
 
-    <form>
+    <form [formGroup]="entryForm" (ngSubmit)="submit()">
 
       <mat-card-content>
 
-        <div fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+        <div #createJournalFormRef fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Office</mat-label>
-            <mat-select required>
-              <mat-option>Select Office</mat-option>
+            <mat-label>{{ "labels.inputs.Office" | translate }}</mat-label>
+            <mat-select required formControlName="officeId">
+              <mat-option *ngFor="let office of officeData" [value]="office.id">
+                {{ office.name }}
+              </mat-option>
             </mat-select>
-            <mat-error>
-              Office is required
+            <mat-error *ngIf="entryForm.controls.officeId.hasError('required')">
+              {{ "labels.inputs.Office" | translate }} {{ "labels.commons.is" | translate }}
+              <strong>{{ "labels.commons.required" | translate }}</strong>
             </mat-error>
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Currency</mat-label>
-            <mat-select required>
-              <mat-option>Select Currency</mat-option>
+            <mat-label>{{ "labels.inputs.Currency" | translate }}</mat-label>
+            <mat-select required formControlName="currencyCode">
+              <mat-option *ngFor="let currency of currencyData" [value]="currency.code">
+                {{ currency.displayLabel }}
+              </mat-option>
             </mat-select>
-            <mat-error>
-              Currency is required
+            <mat-error *ngIf="entryForm.controls.currencyCode.hasError('required')">
+              {{ "labels.inputs.Currency" | translate }} {{ "labels.commons.is" | translate }}
+              <strong>{{ "labels.commons.required" | translate }}</strong>
             </mat-error>
           </mat-form-field>
 
-          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column">
 
-            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column" formArrayName="debits"
+               *ngFor="let debit of debits.controls; let i = index;">
 
-              <mat-form-field fxFlex="48%">
-                <mat-label>Affected GL Entry (Debit)</mat-label>
-                <mat-select required>
-                  <mat-option>Select GL Account</mat-option>
-                </mat-select>
-                <mat-error>
-                  GL Account is required
-                </mat-error>
-              </mat-form-field>
+            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column" [formGroupName]="i">
+
+              <mifosx-gl-account-selector fxFlex="48%"
+                                          [inputFormControl]="debits.at(i).controls.glAccountId"
+                                          [glAccountList]="glAccountData"
+                                          [required]="true"
+                                          [inputLabel]="'Affected GL Entry (Debit)'"
+              >
+              </mifosx-gl-account-selector>
 
               <mat-form-field fxFlex="43%">
-                <mat-label>Debit Amount</mat-label>
-                <input type="number" matInput required>
-                <mat-error>
-                  Debit Amount is required
+                <mat-label>{{ "labels.inputs.Debit Amount" | translate }}</mat-label>
+                <input type="number" matInput required formControlName="amount">
+                <mat-error *ngIf="debits.at(i).controls.amount.hasError('required')">
+                  {{ "labels.inputs.Debit Amount" | translate }} {{ "labels.commons.is" | translate }}
+                  <strong>{{ "labels.commons.required" | translate }}</strong>
                 </mat-error>
               </mat-form-field>
 
               <span fxFlex>
-                <button type="button" mat-icon-button>
+                <button *ngIf="i !== 0" type="button" mat-icon-button (click)="removeAffectedGLEntry(debits, i)">
+                  <fa-icon icon="minus-circle" size="lg"></fa-icon>
+                </button>
+                <button *ngIf="i === 0" type="button" mat-icon-button color="primary"
+                        (click)="addAffectedGLEntry(debits)">
                   <fa-icon icon="plus-circle" size="lg"></fa-icon>
                 </button>
               </span>
@@ -60,30 +71,34 @@
 
           </div>
 
-          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column">
+          <div fxFlexFill fxLayout="row wrap" fxLayout.lt-md="column" formArrayName="credits"
+               *ngFor="let credit of credits.controls; let i = index;">
 
-            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column">
+            <div fxFlexFill fxLayout="row wrap" fxLayoutGap="2%" fxLayout.lt-md="column" [formGroupName]="i">
 
-              <mat-form-field fxFlex="48%">
-                <mat-label>Affected GL Entry (Credit)</mat-label>
-                <mat-select required>
-                  <mat-option>Select GL Account</mat-option>
-                </mat-select>
-                <mat-error>
-                  GL Account is required
-                </mat-error>
-              </mat-form-field>
+              <mifosx-gl-account-selector fxFlex="48%"
+                                          [inputFormControl]="credits.at(i).controls.glAccountId"
+                                          [glAccountList]="glAccountData"
+                                          [required]="true"
+                                          [inputLabel]="'Affected GL Entry (Credit)'"
+              >
+              </mifosx-gl-account-selector>
 
               <mat-form-field fxFlex="43%">
-                <mat-label>Credit Amount</mat-label>
-                <input type="number" matInput required>
-                <mat-error>
-                  Credit Amount is required
+                <mat-label>{{ "labels.inputs.Credit Amount"|translate }}</mat-label>
+                <input type="number" matInput required formControlName="amount">
+                <mat-error *ngIf="credits.at(i).controls.amount.hasError('required')">
+                  {{ "labels.inputs.Credit Amount"|translate }} {{ "labels.commons.is" | translate }}
+                  <strong>{{ "labels.commons.required" | translate }}</strong>
                 </mat-error>
               </mat-form-field>
 
               <span fxFlex>
-                <button type="button" mat-icon-button>
+                <button *ngIf="i !== 0" type="button" mat-icon-button (click)="removeAffectedGLEntry(credits, i)">
+                  <fa-icon icon="minus-circle" size="lg"></fa-icon>
+                </button>
+                <button *ngIf="i === 0" type="button" mat-icon-button color="primary"
+                        (click)="addAffectedGLEntry(credits)">
                   <fa-icon icon="plus-circle" size="lg"></fa-icon>
                 </button>
               </span>
@@ -93,55 +108,59 @@
           </div>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Reference Number</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Reference Number"|translate }}</mat-label>
+            <input matInput formControlName="referenceNumber">
           </mat-form-field>
 
-          <mat-form-field fxFlex="48%">
-            <mat-label>Transaction Date</mat-label>
-            <input matInput>
-            <mat-datepicker-toggle matSuffix></mat-datepicker-toggle>
-            <mat-datepicker></mat-datepicker>
-            <mat-error>
-              Transaction Date is required
+          <mat-form-field fxFlex="48%" (click)="transactionDatePicker.open()">
+            <mat-label>{{ "labels.inputs.Transaction Date"|translate }}</mat-label>
+            <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="transactionDatePicker" required
+                   formControlName="transactionDate">
+            <mat-datepicker-toggle matSuffix [for]="transactionDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #transactionDatePicker></mat-datepicker>
+            <mat-error *ngIf="entryForm.controls.transactionDate.hasError('required')">
+              {{ "labels.inputs.Transaction Date"|translate }} {{ "labels.commons.is" | translate }}
+              <strong>{{ "labels.commons.required" | translate }}</strong>
             </mat-error>
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Payment Type</mat-label>
-            <mat-select>
-              <mat-option>Select Payment Type</mat-option>
+            <mat-label>{{ "labels.inputs.Payment Type"|translate }}</mat-label>
+            <mat-select formControlName="paymentTypeId">
+              <mat-option *ngFor="let paymentType of paymentTypeData" [value]="paymentType.id">
+                {{ paymentType.name }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Account Number</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Account Number"|translate }}</mat-label>
+            <input matInput formControlName="accountNumber">
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Cheque Number</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Cheque Number"|translate }}</mat-label>
+            <input matInput formControlName="checkNumber">
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Routing Code</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Routing Code"|translate }}</mat-label>
+            <input matInput formControlName="routingCode">
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Receipt Number</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Receipt Number"|translate }}</mat-label>
+            <input matInput formControlName="receiptNumber">
           </mat-form-field>
 
           <mat-form-field fxFlex="48%">
-            <mat-label>Bank Number</mat-label>
-            <input matInput>
+            <mat-label>{{ "labels.inputs.Bank Number"|translate }}</mat-label>
+            <input matInput formControlName="bankNumber">
           </mat-form-field>
 
           <mat-form-field fxFlex="98%">
-            <mat-label>Comments</mat-label>
-            <textarea matInput></textarea>
+            <mat-label>{{ "labels.inputs.Comments"|translate }}</mat-label>
+            <textarea matInput formControlName="comments" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
           </mat-form-field>
 
         </div>
@@ -149,8 +168,11 @@
       </mat-card-content>
 
       <mat-card-actions fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="5px">
-        <button type="button" mat-raised-button>Cancel</button>
-        <button mat-raised-button color="primary">Submit</button>
+        <button type="button" mat-raised-button [routerLink]="['../../']">{{ "labels.buttons.Cancel" | translate }}
+        </button>
+        <button mat-raised-button color="primary" [disabled]="!entryForm.valid"
+                *mifosxHasPermission="'CREATE_JOURNALENTRY'">{{ "labels.buttons.Submit" | translate }}
+        </button>
       </mat-card-actions>
 
     </form>
@@ -159,12 +181,20 @@
 
 </div>
 
-<ng-template>
-  <h2>Add Journal Entry Form</h2>
-  <p class="mw300">Red asterisk fields are required.</p>
+<ng-template #templateEntryFormRef let-popover="popover">
+  <h2>{{ "labels.heading.Add Journal Entry Form" | translate }}</h2>
+  <p class="mw300">{{ "labels.text.Red asterisk field" | translate }} <a
+    href="https://mifosforge.jira.com/wiki/spaces/docs/pages/67895310/Add+Journal+Entries"
+    target="_blank">{{ "labels.inputs.Add Journal Entries" | translate }}</a></p>
   <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="2%" fxLayout.lt-md="column">
-    <button mat-raised-button color="warn">Close</button>
-    <button mat-raised-button color="primary">Back</button>
-    <button mat-raised-button color="primary">Next</button>
+    <button mat-raised-button color="warn"
+            (click)="popover.close();configurationWizardService.closeConfigWizard()">{{ "labels.buttons.Close" | translate }}
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="popover.close();previousStep()">{{ "labels.buttons.Back" | translate }}
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="popover.close();nextStep()">{{ "labels.buttons.Next" | translate }}
+    </button>
   </div>
 </ng-template>

@@ -24,6 +24,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DirectivesModule } from '../directives/directives.module';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -50,7 +52,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatTableModule,
     MatDividerModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    DirectivesModule,
+    SharedModule
   ]
 })
 export class McurrencyModule { }

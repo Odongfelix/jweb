@@ -16,12 +16,12 @@ const routes: Routes = [
     {
       path: 'configuration',
       component: MconfigurationComponent,
-      data: {title: 'configuration', breadcrumb: 'Enter Multi-currency Configuration'},
+      data: {title: 'configuration', breadcrumb: 'Multi-currency Configuration'},
     },
     {
       path: 'entry',
       component: EntryComponent,
-      data: {title: 'Entry', breadcrumb: 'Enter Multi-currency Journal Entry'},
+      data: {title: 'Entry', breadcrumb: 'Multi-currency Journal Entry'},
     },
     {
       path: 'reporting',
