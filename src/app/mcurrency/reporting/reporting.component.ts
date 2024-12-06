@@ -5,6 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as XLSX from 'xlsx';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 interface JournalEntryReport {
   date: string;
@@ -49,6 +50,10 @@ export class ReportingComponent implements OnInit {
   // Loading and error states
   isLoading = false;
   errorMessage: string | null = null;
+
+  // Maximum and minimum dates for the date picker
+  maxDate: Date = new Date(); // Current date
+  minDate: Date = new Date(new Date().getFullYear() - 1, 0, 1); // First day of previous year
 
   constructor(
     private http: HttpClient,
@@ -134,7 +139,7 @@ export class ReportingComponent implements OnInit {
     this.filterForm.reset();
   }
 
-  // Export methods remain the same as in previous implementation
+  // Export to CSV method
   exportToCSV(): void {
     if (!this.dataSource || this.dataSource.data.length === 0) {
       alert('No data to export');
@@ -149,6 +154,7 @@ export class ReportingComponent implements OnInit {
     XLSX.writeFile(workbook, fileName);
   }
 
+  // Print report method
   printReport(): void {
     window.print();
   }
