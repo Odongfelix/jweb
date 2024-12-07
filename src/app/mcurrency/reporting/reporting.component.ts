@@ -5,7 +5,14 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as XLSX from 'xlsx';
-import { MatDatepicker } from '@angular/material/datepicker';
+import { UntypedFormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { catchError, tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+import { AccountingService } from '../../accounting/accounting.service';
+import { SettingsService } from '../../settings/settings.service';
+import { Dates } from '../../core/utils/dates';
 
 interface JournalEntryReport {
   date: string;
@@ -18,12 +25,28 @@ interface JournalEntryReport {
   creditUGX: number;
 }
 
+interface Office {
+  id: number;
+  name: string;
+}
+
 @Component({
   selector: 'mifosx-reporting',
   templateUrl: './reporting.component.html',
   styleUrls: ['./reporting.component.scss']
 })
 export class ReportingComponent implements OnInit {
+  /** Minimum transaction date allowed. */
+  minDate = new Date(2000, 0, 1);
+  /** Maximum transaction date allowed. */
+  maxDate = new Date();
+
+  /** Office data. */
+  offices: Office[] = [];
+
+  /** Gl Account data. */
+  glAccounts: any[] = [];
+
   // Table configuration
   displayedColumns: string[] = [
     'date',
@@ -40,9 +63,6 @@ export class ReportingComponent implements OnInit {
   // Form for filtering
   filterForm: FormGroup;
 
-  // Filtering options
-  offices: string[] = []; // Populate from backend
-
   // Pagination and sorting
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -51,24 +71,28 @@ export class ReportingComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
 
-  // Maximum and minimum dates for the date picker
-  maxDate: Date = new Date(); // Current date
-  minDate: Date = new Date(new Date().getFullYear() - 1, 0, 1); // First day of previous year
-
   constructor(
-    private http: HttpClient,
-    private fb: FormBuilder
-  ) { }
+    private accountingService: AccountingService,
+    private settingsService: SettingsService,
+    private dateUtils: Dates,
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     // Initialize filter form
     this.initFilterForm();
 
-    // Fetch initial data
+    // Fetch offices
     this.fetchOffices();
+
+    // Load initial report data
     this.loadReportData();
   }
 
+  /**
+   * Initialize filter form with default values
+   */
   initFilterForm(): void {
     this.filterForm = this.fb.group({
       fromDate: [null],
@@ -82,17 +106,30 @@ export class ReportingComponent implements OnInit {
     });
   }
 
+  /**
+   * Fetch offices from the backend
+   */
   fetchOffices(): void {
-    this.http.get<string[]>('/api/offices')
-      .subscribe(
-        offices => this.offices = offices,
-        error => {
-          console.error('Error fetching offices:', error);
-          this.errorMessage = 'Unable to load offices';
-        }
-      );
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.accountingService.getOffices().pipe(
+      tap(offices => {
+        this.offices = offices || [];
+        this.isLoading = false;
+      }),
+      catchError(error => {
+        console.error('Error fetching offices:', error);
+        this.errorMessage = 'Unable to load offices';
+        this.isLoading = false;
+        return throwError(error);
+      })
+    ).subscribe();
   }
 
+  /**
+   * Load report data based on filter criteria
+   */
   loadReportData(): void {
     this.isLoading = true;
     this.errorMessage = null;
@@ -112,34 +149,59 @@ export class ReportingComponent implements OnInit {
       params.office = formValues.office;
     }
 
-    this.http.get<JournalEntryReport[]>('/api/journal-entries/report', { params })
-      .subscribe(
-        data => {
-          // Transform date strings to Date objects for better display
-          const transformedData = data.map(entry => ({
-            ...entry,
-            date: new Date(entry.date).toLocaleDateString()
-          }));
+    // Simulated data loading - replace with actual service method
+    const mockReportData: JournalEntryReport[] = [
+      {
+        date: new Date().toLocaleDateString(),
+        debitAccount: 'Cash Account',
+        creditAccount: 'Revenue Account',
+        debitUSD: 1000,
+        creditUSD: 1000,
+        conversionRate: 1,
+        debitUGX: 3700000,
+        creditUGX: 3700000
+      }
+    ];
 
-          this.dataSource = new MatTableDataSource(transformedData);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.isLoading = false;
-        },
-        error => {
-          console.error('Error fetching report data:', error);
-          this.errorMessage = 'Unable to load journal entry report';
-          this.isLoading = false;
-        }
-      );
+    // Create data source
+    this.dataSource = new MatTableDataSource(mockReportData);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.isLoading = false;
+
+    // TODO: Uncomment and implement actual API call
+    // this.accountingService.getJournalEntryReport(params)
+    //   .pipe(
+    //     tap(data => {
+    //       const transformedData = data.map(entry => ({
+    //         ...entry,
+    //         date: new Date(entry.date).toLocaleDateString()
+    //       }));
+    //
+    //       this.dataSource = new MatTableDataSource(transformedData);
+    //       this.dataSource.paginator = this.paginator;
+    //       this.dataSource.sort = this.sort;
+    //       this.isLoading = false;
+    //     }),
+    //     catchError(error => {
+    //       console.error('Error fetching report data:', error);
+    //       this.errorMessage = 'Unable to load journal entry report';
+    //       this.isLoading = false;
+    //       return throwError(error);
+    //     })
+    //   ).subscribe();
   }
 
-  // Reset filters
+  /**
+   * Reset all filters
+   */
   resetFilters(): void {
     this.filterForm.reset();
   }
 
-  // Export to CSV method
+  /**
+   * Export data to CSV
+   */
   exportToCSV(): void {
     if (!this.dataSource || this.dataSource.data.length === 0) {
       alert('No data to export');
@@ -154,7 +216,9 @@ export class ReportingComponent implements OnInit {
     XLSX.writeFile(workbook, fileName);
   }
 
-  // Print report method
+  /**
+   * Print current report
+   */
   printReport(): void {
     window.print();
   }
