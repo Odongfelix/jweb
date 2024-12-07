@@ -40,6 +40,26 @@
             <div *ngIf="fetchError" class="text-red-500 mt-2">
               {{ fetchError }}
             </div>
+
+            <!-- Buttons for Live Rates -->
+            <div class="mt-4 flex items-center space-x-2">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!liveRate || isFetchingLiveRate"
+                (click)="saveLiveRate()"
+              >
+                Save Live Rate
+              </button>
+              <button
+                mat-raised-button
+                color="accent"
+                [disabled]="isFetchingLiveRate"
+                (click)="refreshLiveRate()"
+              >
+                Refresh Live Rates
+              </button>
+            </div>
           </div>
 
           <!-- Manual Rate Section -->
@@ -50,10 +70,11 @@
               <mat-form-field appearance="outline" class="w-24">
                 <input
                   matInput
-                  type="number"
+                  type="text"
                   placeholder="Enter rate"
                   [(ngModel)]="manualRate"
                   name="manualRate"
+                  (input)="validateNumberInput($event)"
                 />
               </mat-form-field>
               <button
