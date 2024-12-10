@@ -3,14 +3,14 @@
     <div fxLayout="row" fxLayoutGap="2%" fxLayout.lt-md="column">
       <mat-form-field>
         <mat-label>From Date</mat-label>
-        <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate">
+        <input matInput [matDatepicker]="fromDatePicker" formControlName="fromDate" [min]="minDate" [max]="maxDate">
         <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #fromDatePicker></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>To Date</mat-label>
-        <input matInput [matDatepicker]="toDatePicker" formControlName="toDate">
+        <input matInput [matDatepicker]="toDatePicker" formControlName="toDate" [min]="minDate" [max]="maxDate">
         <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #toDatePicker></mat-datepicker>
       </mat-form-field>
@@ -28,19 +28,25 @@
     </div>
   </form>
 
-  <div *ngIf="errorMessage" class="error-message">
+  <div class="error-message" *ngIf="errorMessage">
     {{ errorMessage }}
   </div>
 
-  <div *ngIf="isLoading" class="loading-spinner">
+  <div class="loading-spinner" *ngIf="isLoading">
     <mat-spinner></mat-spinner>
   </div>
 
-  <mat-table *ngIf="!isLoading" [dataSource]="dataSource" matSort>
+  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
     <!-- Date Column -->
     <ng-container matColumnDef="date">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
       <mat-cell *matCellDef="let element">{{ element.date }}</mat-cell>
+    </ng-container>
+
+    <!-- Office Column -->
+    <ng-container matColumnDef="office">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Office</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element.office }}</mat-cell>
     </ng-container>
 
     <!-- Debit Account Column -->
@@ -92,7 +98,8 @@
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 
   <div class="export-buttons">
-    <button mat-raised-button color="accent" (click)="exportToCSV()">Export to CSV</button>
-    <button mat-raised-button color="warn" (click)="printReport()">Print Report</button>
+    <button mat-raised-button color="primary" (click)="exportToCSV()">Export to CSV</button>
+    <button mat-raised-button color="warn" (click)="exportToPDF()">Export to PDF</button>
+    <button mat-raised-button color="secondary" (click)="printReport()">Print Report</button>
   </div>
 </div>
