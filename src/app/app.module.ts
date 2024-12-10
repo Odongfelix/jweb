@@ -45,6 +45,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MconfigurationComponent } from './mcurrency/mconfiguration/mconfiguration.component';
 import { EntryComponent } from './mcurrency/entry/entry.component';
 import { ReportingComponent } from './mcurrency/reporting/reporting.component';
+import { McurrencyRoutingModule } from './mcurrency/mcurrency-routing.module';
 
 /**
  * App Module
@@ -93,9 +94,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     CollectionsModule,
     TasksModule,
     ConfigurationWizardModule,
-    AppRoutingModule
+    AppRoutingModule,
+    McurrencyRoutingModule
   ],
-  declarations: [WebAppComponent, NotFoundComponent, MconfigurationComponent, EntryComponent, ReportingComponent],
+  declarations: [WebAppComponent, NotFoundComponent],
   providers: [DatePipe],
   bootstrap: [WebAppComponent]
 })

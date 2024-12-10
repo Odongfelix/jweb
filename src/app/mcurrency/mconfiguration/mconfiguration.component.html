@@ -1,1 +1,98 @@
-<p>mconfiguration works!</p>
+<div class="container">
+  <mat-card>
+    <form>
+      <mat-card-title>Configure Exchange Rate</mat-card-title>
+      <mat-card-content>
+        <div>
+          <!-- Toggle Live Rates -->
+          <mat-checkbox
+            [(ngModel)]="useLiveRates"
+            name="useLiveRates"
+            (change)="toggleRateMode()"
+          >
+            Use live rates
+          </mat-checkbox>
+
+          <!-- Live Rates Section -->
+          <div *ngIf="useLiveRates" class="mt-4">
+            <mat-label class="block mb-2">Current Exchange Rate</mat-label>
+            <div class="flex items-center space-x-2">
+              <mat-label>1 USD = </mat-label>
+              <mat-form-field appearance="outline" class="w-24">
+                <input
+                  matInput
+                  type="text"
+                  placeholder="UGX"
+                  readonly
+                  [value]="liveRate ? liveRate : 'Loading...'"
+                />
+              </mat-form-field>
+              <mat-icon matSuffix *ngIf="!isFetchingLiveRate && !fetchError" class="text-green-600">sync</mat-icon>
+              <mat-progress-spinner
+                *ngIf="isFetchingLiveRate"
+                diameter="20"
+                mode="indeterminate"
+              ></mat-progress-spinner>
+              <small class="text-gray-500">
+                Last updated: {{ lastUpdated | date:'short' }}
+              </small>
+            </div>
+            <div *ngIf="fetchError" class="text-red-500 mt-2">
+              {{ fetchError }}
+            </div>
+
+            <!-- Buttons for Live Rates -->
+            <div class="mt-4 flex items-center space-x-2">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!liveRate || isFetchingLiveRate"
+                (click)="saveLiveRate()"
+              >
+                Save Live Rate
+              </button>
+              <button
+                mat-raised-button
+                color="accent"
+                [disabled]="isFetchingLiveRate"
+                (click)="refreshLiveRate()"
+              >
+                Refresh Live Rates
+              </button>
+            </div>
+          </div>
+
+          <!-- Manual Rate Section -->
+          <div *ngIf="!useLiveRates" class="mt-4">
+            <mat-label class="block mb-2">Manual Exchange Rate</mat-label>
+            <div class="flex items-center space-x-2">
+              <mat-label>1 USD = </mat-label>
+              <mat-form-field appearance="outline" class="w-24">
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Enter rate"
+                  [(ngModel)]="manualRate"
+                  name="manualRate"
+                  (input)="validateNumberInput($event)"
+                />
+              </mat-form-field>
+              <button
+                mat-raised-button
+                color="primary"
+                class="ml-2"
+                [disabled]="!manualRate || !canSaveRate"
+                (click)="saveManualRate()"
+              >
+                Save Rate
+              </button>
+            </div>
+            <small class="text-gray-500 block mt-2">
+              * Manually entered rate will be used for calculations
+            </small>
+          </div>
+        </div>
+      </mat-card-content>
+    </form>
+  </mat-card>
+</div>

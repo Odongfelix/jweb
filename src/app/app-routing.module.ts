@@ -3,23 +3,24 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // Not Found Component
-import {NotFoundComponent} from './not-found/not-found.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
-/**
- * Fallback to this route when no prior route is matched.
- */
 const routes: Routes = [
+  {
+    path: 'multi-currency',
+    loadChildren: () => import('./mcurrency/mcurrency.module').then(m => m.McurrencyModule)
+  },
+  {
+    path: '',
+    redirectTo: '/multi-currency/configuration', // Default redirect
+    pathMatch: 'full'
+  },
   {
     path: '**',
     component: NotFoundComponent
   }
 ];
 
-/**
- * App Routing Module.
- *
- * Configures the fallback route.
- */
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule],

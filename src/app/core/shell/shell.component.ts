@@ -60,6 +60,48 @@ export class ShellComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Safe method to handle breadcrumb-related operations
+   * ADDED: New method to prevent undefined errors
+   * @param breadcrumbs Array of breadcrumbs
+   * @returns Safely processed breadcrumbs
+   */
+  safeBreadcrumbHandler(breadcrumbs: any[] | undefined): any[] {
+    // If breadcrumbs is undefined or not an array, return an empty array
+    if (!breadcrumbs || !Array.isArray(breadcrumbs)) {
+      return [];
+    }
+
+    // Filter out any undefined or null breadcrumbs
+    return breadcrumbs.filter(breadcrumb =>
+      breadcrumb &&
+      (breadcrumb.label !== undefined && breadcrumb.label !== null)
+    ).map(breadcrumb => ({
+      // Ensure each breadcrumb has a valid label and url
+      label: breadcrumb.label || '',
+      url: breadcrumb.url || null
+    }));
+  }
+
+  /**
+   * Enhanced version of toggleCollapse to handle breadcrumb-related issues
+   * @param event boolean or breadcrumb-related event
+   */
+  enhancedToggleCollapse(event: any) {
+    // If event is a boolean, handle sidenav collapse
+    if (typeof event === 'boolean') {
+      this.sidenavCollapsed = event;
+    }
+    // If event might be breadcrumb-related, use safe handler
+    else if (event && event.breadcrumbs) {
+      const safeBreadcrumbs = this.safeBreadcrumbHandler(event.breadcrumbs);
+      // Additional logic if needed
+    }
+
+    // Ensure change detection
+    this.cdr.detectChanges();
+  }
+
+  /**
    * Unsubscribes from progress bar.
    */
   ngOnDestroy() {
@@ -67,5 +109,4 @@ export class ShellComponent implements OnInit, OnDestroy {
       this.progressBar$.unsubscribe();
     }
   }
-
 }

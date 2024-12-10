@@ -16,7 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * Route data property to generate breadcrumb using a static string.
  *
- * Example- breadcrumb: 'Home'
+ * Example-breadcrumb: 'Home'
  */
 const routeDataBreadcrumb = 'breadcrumb';
 /**
@@ -181,6 +181,15 @@ export class BreadcrumbComponent implements AfterViewInit {
         });
       }
     });
+  }
+
+  /**Enhanced transalation mehtod with improved null hamdling */
+  getTranslated(text: string | undefined):string {
+    if (!text) return ''
+
+    const key: string = 'labels.text.' + text;
+    const translation = this.translateService.instant(key);
+    return (translation !== key) ? translation : text;
   }
 
   /**
